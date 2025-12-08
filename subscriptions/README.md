@@ -443,7 +443,7 @@ A **chargeback** occurs when a customer disputes a charge with their bank.
 
 #### Chargeback on Active Subscription
 
-**Chargebacks trigger immediate cancellation.** The user has disputed the charge with their bank, so we stop service immediately.
+**Chargebacks trigger cancellation at the end of the billing period.** The user has disputed the charge, so we schedule cancellation but let them use what they've already paid for.
 
 ```
 Mollie webhook: chargeback opened
@@ -451,11 +451,15 @@ Mollie webhook: chargeback opened
          ▼
 webhook_mollie/handle_chargeback()
          │
-         ├── Set subscription status = "canceled"
-         ├── Set cancelReason = "Chargeback received - auto-canceled"
-         ├── Stop server immediately
+         ├── Set subscription status = "canceling"
+         ├── Set cancelAt = currentPeriodEnd
+         ├── Set cancelReason = "Chargeback received"
          ├── Flag user (hasChargeback = true)
          └── Create chargeback record for admin
+                  │
+                  ▼
+         Server continues until period end
+         (subscription_expire timer handles stop)
                   │
                   ▼
          Admin reviews chargeback
@@ -474,11 +478,11 @@ webhook_mollie/handle_chargeback()
    Won       Lost
     │         │
     ▼         ▼
-  Refund?   Already canceled
-  (manual)  No further action
+ Consider   Already scheduled
+ refund?    for cancellation
 ```
 
-**Rationale:** If someone chargebacks, they're saying "I didn't authorize this" or "I didn't receive the service." Either way, continuing to provide service makes no sense and exposes us to more risk.
+**Rationale:** Even with a chargeback, the user may have legitimately paid for previous months. We honor the current period they paid for, then stop service. This is fair and reduces disputes.
 
 #### Chargeback on Canceled Subscription
 
