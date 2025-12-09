@@ -1,0 +1,51 @@
+Mollie MCP Server
+The Mollie MCP server enables merchants to use various AI tools like Claude Desktop and Cursor AI to utilize natural language for creating different resources in their Mollie account. Currently, the following APIs are available: Payments API, Payment Links API, and Customers API but we plan to add support for more endpoints in the future.
+
+MCP endpoint
+You can find Mollie MCP server at https://mcp.mollie.com/mcp/, which acts as a proxy for the public API. To use the public API and in order for the MCP server to interact with your account, you need to pass an organization token as an environment variable.
+
+The name of the environment variable is MOLLIE_API_OAUTH_ORG_TOKEN, and it should contain the token with the appropriate scopes. Without the correct token, the MCP server won't have the necessary permissions to call public endpoints. Please be aware that profile.read is a required scope for the tools to work. Add the optional scopes for the Payments API, Payment Links API, and the Customers API to enable all available tools in the current MCP server offering.
+
+Example configurations
+Claude Desktop using mcp-remote package
+Since most tools support local instances of the MCP server, we suggest using the mcp-remote patch package. You can install the package using a node package manager like npm by running npm -i mcp-remote.
+
+Refer to the Add the Filesystem MCP Server article to find the configuration file for Claude Desktop. The location of this file depends on your operating system.
+
+Modify the file accordingly and add the following JSON at the appropriate level in your configuration file. Ensure that you place Mollie under the mcpServers parent key.
+
+JSON
+
+{
+  "mcpServers": {
+    "Mollie": {
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "https://mcp.mollie.com/mcp/",
+        "--header",
+        "Authorization: Bearer ${MOLLIE_API_OAUTH_ORG_TOKEN}"
+      ],
+      "env": {
+        "MOLLIE_API_OAUTH_ORG_TOKEN": "PUT_YOUR_OWN_ORG_TOKEN_HERE"
+      }
+    }
+  }
+}
+Next, in the environment variable (env) replace MOLLIE_API_OAUTH_ORG_TOKEN with your own organization token (assigning the correct scopes).
+
+Restart your Claude Desktop instance and test the MCP server by asking the application which tools are available with your Mollie MCP Server.
+
+🚧
+Privacy Notice for free-tier LLM users
+Your conversations may be used for AI training. Most free-tier AI services retain and analyze your messages to improve their models. This means your questions, personal information, and discussions could become part of their training data.
+
+To protect yourself:
+
+Check the provider's privacy policy and opt-out options.
+Consider paid tiers, which typically offer better privacy protections.
+Remember: once shared, your data may be difficult or impossible to remove from training datasets.
+Updated about 1 month ago
+
+Mirakl: Installation guide
+Troubleshooting common issues

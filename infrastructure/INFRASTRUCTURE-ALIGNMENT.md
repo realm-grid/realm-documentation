@@ -78,7 +78,7 @@ This document describes the complete infrastructure alignment between Azure reso
 
 ### Container-to-Customer Mapping
 
-#### Patrick Rosen (patrickr@realmgrid.com)
+#### Patrick Riedijk (patrickr@realmgrid.com)
 - **Company**: RealmGrid
 - **Role**: Founder & CEO
 - **CRM Contact ID**: `contact-patrick-001`
@@ -89,7 +89,7 @@ This document describes the complete infrastructure alignment between Azure reso
 | `patrick-valheim-001` | Valheim | 30334 | 157.180.57.169:30334 | gameservers |
 | `patrick-palworld-001` | Palworld | 30667 | 157.180.57.169:30667 | gameservers |
 
-#### Yair Ben-David (yair@cloudevolvers.com)
+#### Yair Knijn (yair@cloudevolvers.com)
 - **Company**: Cloud Evolvers
 - **Role**: CTO
 - **CRM Contact ID**: `contact-yair-001`
