@@ -92,10 +92,10 @@ Mollie sends webhook → webhook_mollie
 ## Key Identifiers
 
 | ID | Format | Example | Purpose |
-|----|--------|---------|---------|
+|----|--------|---------|---------||
 | `serverId` | `srv_{uuid}` | `srv_a1b2c3d4` | Unique server identifier |
 | `subscriptionId` | `sub_{paymentId}` | `sub_tr_xyz123` | Links to Mollie payment |
-| `userId` | Auth provider ID | `auth0|123` | User identity |
+| `userId` | Auth provider ID | `aad|{guid}` | User identity (Azure AD) |
 
 ## Kubernetes Resources per Server
 
@@ -121,7 +121,7 @@ Each game server creates:
 labels:
   app: game-server
   server-id: srv_a1b2c3d4
-  user-id: auth0|123
+  user-id: aad|12345678-1234-1234-1234-123456789012
   game-type: minecraft
   tier: medium
   managed-by: realm-functions

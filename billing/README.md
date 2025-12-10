@@ -48,7 +48,7 @@ Customer selects:
          ▼
 POST /api/checkout/create
 {
-    "userId": "auth0|123",
+    "userId": "aad|12345678-1234-1234-1234-123456789012",
     "email": "user@example.com",
     "gameType": "minecraft",
     "tier": "medium",
@@ -67,7 +67,7 @@ checkout_create function:
 │       "redirectUrl": "https://realmgrid.com/checkout/success",
 │       "webhookUrl": "https://api.realmgrid.com/webhook/mollie",
 │       "metadata": {
-│           "userId": "auth0|123",
+│           "userId": "aad|12345678-1234-1234-1234-123456789012",
 │           "gameType": "minecraft",
 │           "tier": "medium",
 │           "serverName": "My Server"
@@ -109,7 +109,7 @@ Received when a payment is successful (initial or renewal).
     "status": "paid",
     "amount": {"value": "9.99", "currency": "EUR"},
     "metadata": {
-        "userId": "auth0|123",
+        "userId": "aad|12345678-1234-1234-1234-123456789012",
         "tier": "medium",
         "gameType": "minecraft"
     }
@@ -197,7 +197,7 @@ After each successful payment:
 {
     "id": "inv_abc123",
     "subscriptionId": "sub_tr_xyz123",
-    "userId": "auth0|123",
+    "userId": "aad|12345678-1234-1234-1234-123456789012",
     
     "status": "paid",
     "amount": 999,

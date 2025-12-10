@@ -53,7 +53,7 @@ metadata:
   namespace: game-servers
   labels:
     server-id: srv_a1b2c3d4
-    user-id: auth0|123
+    user-id: aad|12345678-1234-1234-1234-123456789012
     game-type: minecraft
     tier: medium
 spec:
@@ -203,7 +203,7 @@ Subscription Created                                    Subscription Canceled
 ```json
 {
     "id": "srv_a1b2c3d4",
-    "userId": "auth0|abc123",
+    "userId": "aad|12345678-1234-1234-1234-123456789012",
     "subscriptionId": "sub_tr_xyz123",
     
     "name": "My Minecraft Server",
