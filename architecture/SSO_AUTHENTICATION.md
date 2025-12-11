@@ -4,6 +4,57 @@
 
 Realm Grid uses Azure Entra ID (formerly Azure AD) for Single Sign-On (SSO) authentication. The authentication flow is implemented through Azure Functions that handle OAuth 2.0 authorization code flow with PKCE.
 
+## Two-Layer Authentication Model
+
+RealmGrid implements a **two-layer authentication** model that separates app-to-app security from user authentication:
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                          Two-Layer Authentication                            │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   Layer 1: App Authentication (Easy Auth)                                   │
+│   ─────────────────────────────────────────                                 │
+│   • Frontend apps (realm-web, realm-admin) authenticate TO the Function App │
+│   • Configured via Azure Easy Auth on the Function App                      │
+│   • Production: Uses Managed Identity (automatic, no credentials)           │
+│   • Local Dev: Uses Azure AD App credentials (client_id + client_secret)    │
+│   • Validates the calling app is authorized to access the API               │
+│                                                                              │
+│   Layer 2: User Authentication (JWT)                                        │
+│   ─────────────────────────────────────                                     │
+│   • User's JWT token for business logic and authorization                   │
+│   • Obtained via SSO login flow (Azure AD)                                  │
+│   • Passed as Authorization: Bearer header                                  │
+│   • Verified by Function App for database/server operations                │
+│   • Determines what resources the user can access                           │
+│                                                                              │
+│   ┌──────────┐     Layer 1      ┌──────────────┐     Layer 2     ┌───────┐ │
+│   │ Web/Admin│ ──────────────> │ Function App │ ──────────────> │  DB   │ │
+│   │   App    │   App Token     │  (Easy Auth) │   User JWT      │Cosmos │ │
+│   └──────────┘                  └──────────────┘                 └───────┘ │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Why Two Layers?
+
+1. **Layer 1 (Easy Auth)** protects the Function App API surface from unauthorized applications. Only registered apps (realm-web, realm-admin) can call the API.
+
+2. **Layer 2 (JWT)** authorizes specific user actions. Even if an app is authorized, users can only access their own data.
+
+### Implementation Details
+
+**Layer 1 (App Authentication):**
+- Azure Easy Auth is enabled on the Function App
+- Web Apps use Managed Identity (production) or client credentials (local dev)
+- Validated automatically by Easy Auth before request reaches function code
+
+**Layer 2 (User Authentication):**
+- JWT token issued by SSO login flow
+- Verified in function code using `verify_jwt_token()`
+- Claims extracted to determine user permissions
+
 ## Authentication Flow
 
 ```
